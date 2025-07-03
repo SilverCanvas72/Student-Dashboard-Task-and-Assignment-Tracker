@@ -1,0 +1,135 @@
+body{
+    margin:0px;
+}
+.container{
+    display:flex;
+}
+
+/*Within 'container' div*/
+.left{
+    border: 1px solid #919199;
+    width: 60vw;
+    height: 100vh;
+    border-radius: 15px; 
+    display: flex;
+    flex-direction: column;
+
+}
+.right{
+    border: 1px solid #919199;
+    width: 40vw;
+    height: 100vh;
+    border-radius: 15px; 
+    display:flex;
+    flex-direction: column;
+}
+
+/*Within 'left' div*/
+.header{
+    border: 2px solid #2A2A2E;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    height: 17vh;
+}
+.folders{
+    border: 2px solid #2A2A2E;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    height: 18vh;
+}
+.taskadd{
+    border: 2px solid #2A2A2E;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    height: 57vh;
+}
+
+/*Within 'right' div*/
+.stats{
+    border: 2px solid #919199;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+    height: 9vh;
+    display:flex;
+}
+.today{
+    border: 2px solid #2A2A2E;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    height: 48vh;
+}
+.upcoming{
+    border: 2px solid #2A2A2E;
+    border-radius: 15px;
+    margin: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
+    height: 35vh;
+}
+
+/* Within 'stats' div*/
+.statstoday{
+    border: 1px solid #2A2A2E;
+    border-radius: 15px;
+    height: 9vh;
+    width: 39.75vw;
+    margin-right: 0.25vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.total{
+    border: 1px solid #919199;
+    border-radius: 15px;
+    height: 9vh;
+    width: 29.5vw;
+    margin-left: 0.25vw;
+    margin-right: 0.25vw;
+    display: flex;
+    flex-direction: column;
+}
+
+.streak{
+    border: 1px solid #2A2A2E;
+    border-radius: 15px;
+    height: 9vh;
+    width: 29.75vw;
+    margin-left: 0.25vw;
+}
+/*Within 'total' div*/
+.totalhours{
+    border: 1px solid #2A2A2E;
+    border-radius: 15px;
+    height: 49.75vh;
+    margin-bottom: 0.25vh;
+}
+
+.totaltasks{
+    border: 1px solid #2A2A2E;
+    height: 49.75vh;
+    border-radius: 15px;
+    margin-top: 0.25vh;
+}
+
+/*Within 'statstoday' div*/
+.todayhours{
+    border: 1px solid #2A2A2E;
+    border-radius: 15px;
+    height: 50vh;
+
+}
+.todaytasks {
+    border: 1px solid #2A2A2E;
+    border-radius: 15px;
+    height: 50vh;
+}
