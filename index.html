@@ -4,33 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student study timer</title>
-    <script src="main.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class='container'>
-    <div class='left'>
+    <div class='left'> 
         <div class='header'></div>
         <div class="folders"></div>
-        <div class="taskadd"></div>
+        <div class="taskadd">
+            <div>
+                <!--note to self: Add 'tool tips' - info on doing that here: https://www.w3schools.com/css/css_tooltip.asp-->
+                <form id="taskForm">
+                        <input type="text" id="taskTitle" placeholder="Task Name" required><br>
+                        <input type="text" id="taskSubject" placeholder="Subject"><br>
+                        <input type="number" id="taskEstimatedTime" placeholder="Minutes Estimated"><br>
+                        <input type="date" id="taskDueDate" placeholder="Due Date"><br>
+                        <input type="date" id="taskSoftDeadline" placeholder="Soft Deadline"><br>
+                        <button type="submit">Add Task</button>
+                </form>
+            <ul id="taskList"></ul>
+            </div>
+        </div>
     </div>
     <div class='right'>
         <div class="stats">
             <div class="statstoday">
-                <div class="todayhours"></div>
-                <div class="todaytasks"></div>
+                <div class="todayhours">
+                    <div class="abcd">
+                        <div>Hours:</div>
+                        <div class="todayhoursstat">Placeholder text</div>
+                    </div>
+                </div>
+                <div class="todaytasks">
+                    <div class="abcd">
+                        <div>Tasks:</div>
+                        <div class="todayhoursstat">Placeholder text</div>
+                    </div>
+                </div>
             </div>
-            <div class="total">
-                <div class="totalhours"></div>
-                <div class="totaltasks"></div>
+            <div class="total">                
+                <div class="totalhours">
+
+                    <div id="hoursicon">
+                        <img src="icons/timer.svg" alt="stopwatch icon" class="smallicon">
+                    </div>
+                    <div id="totalhoursstat">Placeholder Text</div> 
+
+                </div>
+                <div class="totaltasks">
+                    <div id="taskicon">
+                        <img src="icons/task.svg" alt="tick icon " class="smallicon">
+                    </div>
+                    <div id="totaltasksstat">Placeholder Text</div> 
+                </div>
             </div>
-            <div class="streak"></div>
+            <div class="streak">
+                
+                <div id="streakicon">
+                    <img src="icons/fire.svg" alt="fire icon" class="icon">
+                </div>
+                <div id="streakstat">Placeholder Text</div>
+
+            </div>
         </div>
         <div class="today"></div>
         <div class="upcoming"></div>
     </div>
 </div>
 
-    
+<script src="main.js"></script>    
 </body>
 </html>
+

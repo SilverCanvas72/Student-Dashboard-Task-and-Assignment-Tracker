@@ -48,6 +48,9 @@ body{
     margin-top: 1vh;
     margin-bottom: 2vh;
     height: 57vh;
+
+    overflow-y: auto; /* For scrolling in task add instead of tasks overflowing onto homepage*/
+    padding: 1rem;
 }
 
 /*Within 'right' div*/
@@ -105,6 +108,10 @@ body{
     height: 9vh;
     width: 29.75vw;
     margin-left: 0.25vw;
+    display: flex;
+    flex-direction: column;
+
+
 }
 /*Within 'total' div*/
 .totalhours{
@@ -112,6 +119,8 @@ body{
     border-radius: 15px;
     height: 49.75vh;
     margin-bottom: 0.25vh;
+    display: flex;
+    vertical-align: middle;
 }
 
 .totaltasks{
@@ -119,6 +128,8 @@ body{
     height: 49.75vh;
     border-radius: 15px;
     margin-top: 0.25vh;
+    display: flex;
+    vertical-align: middle;
 }
 
 /*Within 'statstoday' div*/
@@ -133,3 +144,41 @@ body{
     border-radius: 15px;
     height: 50vh;
 }
+
+/*Within 'streak' div*/
+
+#streakicon{
+    text-align: center;
+}
+
+#streakstat{
+    height: 50vh;
+    text-align:center;
+}
+
+/*Icon Styling*/
+.icon{
+}
+
+.smallicon{
+}
+
+/*Within 'totalhours' div*/
+#hoursicon{
+    text-align: center;
+
+}
+
+#totalhoursstat{
+    text-align:center;
+}
+
+#tasksicon{
+    text-align: center;
+
+}
+
+#totaltasksstat{
+    text-align:center;
+}
+
