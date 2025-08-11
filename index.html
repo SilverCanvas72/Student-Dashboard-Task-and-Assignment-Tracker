@@ -12,18 +12,24 @@
         <div class='header'></div>
         <div class="folders"></div>
         <div class="taskadd">
-            <div>
+            <div id="taskFormContainer" class="taskform-hidden">
                 <!--note to self: Add 'tool tips' - info on doing that here: https://www.w3schools.com/css/css_tooltip.asp-->
                 <form id="taskForm">
                         <input type="text" id="taskTitle" placeholder="Task Name" required><br>
-                        <input type="text" id="taskSubject" placeholder="Subject"><br>
+                        <input type="text" id="taskSubject" placeholder="Subject">
+                            <br>
                         <input type="number" id="taskEstimatedTime" placeholder="Minutes Estimated"><br>
                         <input type="date" id="taskDueDate" placeholder="Due Date"><br>
                         <input type="date" id="taskSoftDeadline" placeholder="Soft Deadline"><br>
                         <button type="submit">Add Task</button>
                 </form>
-            <ul id="taskList"></ul>
             </div>
+
+            <div class="tasklist-wrapper">
+                <ul id="taskList"></ul>
+            </div>
+
+            <button id="openTaskAddForm" class="floating-plus">+</button>
         </div>
     </div>
     <div class='right'>
@@ -31,14 +37,14 @@
             <div class="statstoday">
                 <div class="todayhours">
                     <div class="abcd">
-                        <div>Hours:</div>
+                        <div>Left Today:</div>
                         <div class="todayhoursstat">Placeholder text</div>
                     </div>
                 </div>
                 <div class="todaytasks">
-                    <div class="abcd">
-                        <div>Tasks:</div>
-                        <div class="todayhoursstat">Placeholder text</div>
+                    <div>
+                        <div>Left Today:</div>
+                        <div class="todaytasksstat">Placeholder text</div>
                     </div>
                 </div>
             </div>
@@ -48,14 +54,14 @@
                     <div id="hoursicon">
                         <img src="icons/timer.svg" alt="stopwatch icon" class="smallicon">
                     </div>
-                    <div id="totalhoursstat">Placeholder Text</div> 
+                    <div id="totalhoursstat">0</div> 
 
                 </div>
                 <div class="totaltasks">
                     <div id="taskicon">
                         <img src="icons/task.svg" alt="tick icon " class="smallicon">
                     </div>
-                    <div id="totaltasksstat">Placeholder Text</div> 
+                    <div id="totaltasksstat">0</div> 
                 </div>
             </div>
             <div class="streak">
@@ -63,12 +69,18 @@
                 <div id="streakicon">
                     <img src="icons/fire.svg" alt="fire icon" class="icon">
                 </div>
-                <div id="streakstat">Placeholder Text</div>
+                <div id="streakDisplay">Streak: 0 days</div>
 
             </div>
         </div>
-        <div class="today"></div>
-        <div class="upcoming"></div>
+        <div class="today">
+            <h3>Today</h3>
+            <div class="today-content"></div>
+        </div>
+        <div class="upcoming">
+            <h3>Upcoming</h3>
+            <div class="upcoming-content"></div>
+        </div>
     </div>
 </div>
 

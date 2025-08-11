@@ -42,17 +42,47 @@ body{
     height: 18vh;
 }
 .taskadd{
+    position:relative;
+    display: flex;
+    flex-direction: column;
     border: 2px solid #2A2A2E;
     border-radius: 15px;
     margin: 2vh;
     margin-top: 1vh;
     margin-bottom: 2vh;
     height: 57vh;
-
     overflow-y: auto; /* For scrolling in task add instead of tasks overflowing onto homepage*/
     padding: 1rem;
 }
 
+.tasklist-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+
+/* Hides Task Add screen */
+.taskform-hidden {
+    display: none;
+}
+
+/* Add Task button - Toggles Task Add screen */
+.floating-plus {
+    position: absolute;
+    border-radius: 50%;
+    border:none;
+    /*background-color: #26FF88;*/
+    cursor: pointer;
+    bottom: 1rem;
+    right: 1rem;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+}
+/* Make Task Form Hidden by default */
+.taskform-hidden {
+  display: none;
+}
 /*Within 'right' div*/
 .stats{
     border: 2px solid #919199;
@@ -70,6 +100,9 @@ body{
     margin-top: 1vh;
     margin-bottom: 1vh;
     height: 48vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 .upcoming{
     border: 2px solid #2A2A2E;
@@ -78,6 +111,15 @@ body{
     margin-top: 1vh;
     margin-bottom: 2vh;
     height: 35vh;
+        overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.today-content, .upcoming-content {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0.5rem;
 }
 
 /* Within 'stats' div*/
