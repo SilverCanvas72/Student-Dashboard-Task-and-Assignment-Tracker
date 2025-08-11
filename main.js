@@ -228,11 +228,30 @@ function renderToday() {
         }
 
         const taskEl = document.createElement("div");
-        taskEl.innerHTML = `
+        taskEl.style.marginBottom = "12px";
+
+        taskEl.innerHTML=`
         <strong>${task.title}</strong> (${task.subject || "Misc"})<br>
         Time Needed: ${task.estimatedTime} min
         `;
-        todayDiv.appendChild(taskEl);        
+        
+        const ul = document.createElement("ul");
+        ul.style.marginLeft = "20px";
+
+        task.subtasks.forEach(subtask => {
+            const li = document.createElement("li");
+            li.style.marginBottom = "4px";
+
+            li.innerHTML = `
+                <input type="checkbox" ${subtask.completed ? "checked" : ""} onchange="toggleSubtaskComplete(${task.id}, ${subtask.id})">
+                <strong>${subtask.title}</strong>
+            `;
+
+            ul.appendChild(li);
+        });
+
+        taskEl.appendChild(ul);
+        todayDiv.appendChild(taskEl);
     });
 
     document.querySelector(".todayhoursstat").textContent = (totalRemainingMinutes / 60).toFixed(1) + " hrs";
@@ -247,14 +266,32 @@ function renderUpcoming() {
 
     upcomingTasks.forEach(task => {
         const taskEl = document.createElement("div");
+        taskEl.style.marginBottom = "12px";
         taskEl.innerHTML = `
             <strong>${task.title}</strong> (${task.subject || "Misc"})<br>
             Scheduled: ${formatDate(task.scheduledDate || "N/A")}<br>
             Soft Deadline: ${formatDate(task.softDeadline || "N/A")}<br>
             Final Deadline: ${formatDate(task.dueDate || "N/A")}
         `;
+
+        const ul = document.createElement("ul");
+        ul.style.marginLeft = "20px";
+
+        task.subtasks.forEach(subtask => {
+            const li = document.createElement("li");
+            li.style.marginBottom = "4px";
+
+            li.innerHTML = `
+                <input type="checkbox" ${subtask.completed ? "checked" : ""} onchange="toggleSubtaskComplete(${task.id}, ${subtask.id})">
+                <strong>${subtask.title}</strong>
+            `;
+
+            ul.appendChild(li);
+        });
+
+        taskEl.appendChild(ul);
         upcomingDiv.appendChild(taskEl);
-    })
+    });
 }
 
 function renderTasks() {
@@ -266,11 +303,18 @@ function renderTasks() {
     }
 
     filteredTasks.forEach(task => {
+        const percentCompleted = task.estimatedTime > 0 ? Math.min((task.timeSpent / task.estimatedTime) * 100, 100) : 0;
         const li = document.createElement("li");
         li.innerHTML = `
                         <strong>${task.title}</strong> (${task.subject || "Misc"})<br>
                 Time Spent: ${task.timeSpent} min<br>
                 Time Needed: ${task.estimatedTime} min<br>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                    <div style="background:#ddd; width: 150px; height:10px; border-radius:5px; overflow: hidden;">
+                        <div style="background:#4caf50; width:${percentCompleted}%; height:100%; border-radius:5px 0 0 5px;"></div>
+                    </div>
+                    <div style="min-width: 40px; font-weight: bold;">${percentCompleted.toFixed(1)}%</div>
+                </div>
                 Deadline: ${task.dueDate || "N/A"}<br>
                 Scheduled
                 <input type="date" onchange="scheduleTask(${task.id}, this.value)"><br>
@@ -278,14 +322,129 @@ function renderTasks() {
                 <button onclick="addEstimatedTime(${task.id})">+15 min Needed</button>
                 <button onclick="toggleComplete(${task.id})">${task.completed ? "Uncheck" : "Mark Completed"}</button>
                 <hr>
+                <div class="subtasks-container" id="subtasks-${task.id}">
+                    <strong>Subtasks:</strong>
+                    <ul id="subtask-list-${task.id}" style="margin-left: 20px;"></ul>
+                    <button onclick="toggleAddSubtaskForm(${task.id})">+ Add Subtask</button>
+                    <form id="add-subtask-form-${task.id}" style="display:none; margin-top: 8px;">
+                    <input type="text" name="subtaskTitle" placeholder="Subtask title" required>
+                    <button type="submit">Add</button>
+                    </form>
+                </div>                
         `;
         taskList.appendChild(li);
-    })
+        renderSubtasks(task);
+
+        const addSubtaskForm = document.getElementById(`add-subtask-form-${task.id}`);
+        if (addSubtaskForm) {
+            addSubtaskForm.onsubmit = (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const title = form.subtaskTitle.value.trim();
+                if (!title) return alert("Subtask title is required");
+
+                addSubtask(task.id, title);
+
+                form.reset();
+                toggleAddSubtaskForm(task.id, false);
+            };
+        }
+    });
     updateStats();
     renderToday();
     renderUpcoming();
     saveTasks();
 }
+
+window.toggleAddSubtaskForm = function(taskId, show) {
+    const form = document.getElementById(`add-subtask-form-${taskId}`);
+    if (!form) return;
+    if (show === undefined) {
+        form.style.display = form.style.display === "none" ? "block" : "none";
+    } else {
+        form.style.display = show ? "block" : "none";
+    }
+};
+
+function addSubtask(taskId, title) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    task.subtasks.push({
+        id: Date.now() + Math.floor(Math.random() * 1000), // unique id
+        title,
+        completed: false,
+    });
+
+    renderTasks();
+    saveTasks();
+}
+
+function renderSubtasks(task) {
+    const ul = document.getElementById(`subtask-list-${task.id}`);
+    if (!ul) return;
+    ul.innerHTML = "";
+
+    task.subtasks.forEach(subtask => {
+        const li = document.createElement("li");
+        li.style.marginBottom = "6px";
+
+        li.innerHTML = `
+            <input type="checkbox" ${subtask.completed ? "checked" : ""} onchange="toggleSubtaskComplete(${task.id}, ${subtask.id})">
+            <strong>${subtask.title}</strong>
+        `;
+
+        ul.appendChild(li);
+    });
+}
+
+//Complete Subtask
+window.toggleSubtaskComplete = function(taskId, subtaskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    const subtask = task.subtasks.find(st => st.id === subtaskId);
+    if (!subtask) return;
+
+    subtask.completed = !subtask.completed;
+    renderTasks();
+    saveTasks();
+};
+
+//Add 15 minutes to studied time on a subtask
+window.addSubtaskTimeSpent = function(taskId, subtaskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    const subtask = task.subtasks.find(st => st.id === subtaskId);
+    if (!subtask) return;
+
+    subtask.timeSpent += 15;
+    renderTasks();
+    saveTasks();
+};
+
+// Add 15 minutes to the estimated time for a subtask
+window.addSubtaskEstTime = function(taskId, subtaskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    const subtask = task.subtasks.find(st => st.id === subtaskId);
+    if (!subtask) return;
+
+    subtask.estimatedTime += 15;
+    renderTasks();
+    saveTasks();
+};
+
+//Schedule a subtasks
+window.updateSubtaskScheduledDate = function(taskId, subtaskId, date) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    const subtask = task.subtasks.find(st => st.id === subtaskId);
+    if (!subtask) return;
+
+    subtask.scheduledDate = date;
+    renderTasks();
+    saveTasks();
+};
 
 
 // Pressing button adds 15 minutes to amount of time studied

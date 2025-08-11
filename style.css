@@ -31,7 +31,7 @@ body{
     margin: 2vh;
     margin-top: 2vh;
     margin-bottom: 1vh;
-    height: 17vh;
+    height: 10vh;
 }
 /* Div that holds the folders in it*/
 .folders{
@@ -40,7 +40,7 @@ body{
     margin: 2vh;
     margin-top: 1vh;
     margin-bottom: 1vh;
-    height: 18vh;
+    height: 25vh;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -289,4 +289,14 @@ Hides everything except for task view*/
     height: 100vh !important;
     border-radius: 0 !important;
 
+}
+
+.subtasks-container {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.subtasks-container ul {
+    list-style-type: disc;
+    padding-left: 20px;
 }
