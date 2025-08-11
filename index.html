@@ -10,14 +10,19 @@
 <div class='container'>
     <div class='left'> 
         <div class='header'></div>
-        <div class="folders"></div>
+        <div class="folders">
+        </div>
         <div class="taskadd">
             <div id="taskFormContainer" class="taskform-hidden">
                 <!--note to self: Add 'tool tips' - info on doing that here: https://www.w3schools.com/css/css_tooltip.asp-->
                 <form id="taskForm">
                         <input type="text" id="taskTitle" placeholder="Task Name" required><br>
-                        <input type="text" id="taskSubject" placeholder="Subject">
-                            <br>
+                       
+                        <label for="taskSubjectSelect">Subject</label>
+                        <select id="taskSubjectSelect" required>
+                            <!--The options for folders - need to be added by the users - which are saved in local storage and populated here using JS-->
+                        </select>
+                        <button id="addSubjectBtn" type="button" class="small-btn">+ Add Subject</button><br>
                         <input type="number" id="taskEstimatedTime" placeholder="Minutes Estimated"><br>
                         <input type="date" id="taskDueDate" placeholder="Due Date"><br>
                         <input type="date" id="taskSoftDeadline" placeholder="Soft Deadline"><br>

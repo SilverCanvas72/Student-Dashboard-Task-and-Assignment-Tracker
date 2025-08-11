@@ -22,8 +22,127 @@ document.addEventListener("DOMContentLoaded", () => {
     const taskList = document.getElementById("taskList");
     const openFormBtn = document.getElementById("openTaskAddForm");
     const taskFormContainer = document.getElementById("taskFormContainer");
+    const subjectSelect = document.getElementById("taskSubjectSelect");
+    const foldersContainer = document.querySelector(".folders");
+    const addSubjectBtn = document.getElementById("addSubjectBtn");
 
-    const saved = localStorage.getItem("tasks");
+    let subjects = [];
+    let currentSubjectFilter = null;
+
+    function loadSubjects() {
+        const s = localStorage.getItem('subjects');
+        if (s) {
+            try {
+                subjects = JSON.parse(s);
+            } catch {
+                subjects = ["Misc", "Maths", "Science", "English"]; //Fallback subjects if there is an error
+            }
+        } else {
+            subjects = ["Misc", "Maths", "Science", "English"]; //Default Subjects
+        }
+    }
+
+    function saveSubjects() {
+        localStorage.setItem('subjects', JSON.stringify(subjects));
+    }
+
+    function updateSubjectSelect() {
+        if (!subjectSelect) return;
+        subjectSelect.innerHTML = "";
+        subjects.forEach(sub => {
+            const opt = document.createElement("option");
+            opt.value = sub;
+            opt.textContent = sub;
+            subjectSelect.appendChild(opt);
+        });
+    }
+
+    function renderSubjects() {
+        if (!foldersContainer) return;
+        foldersContainer.innerHTML = "";
+
+        subjects.forEach(sub => {
+            const btn = document.createElement("button");
+            btn.className = "folder";
+            btn.textContent = sub;
+            btn.addEventListener("click", () => {
+                goToSubject(sub);
+            });
+            foldersContainer.appendChild(btn);
+        });
+
+        const addBtn = document.createElement("button");
+        addBtn.className = "small-btn";
+        addBtn.textContent = "+ Add subject";
+        addBtn.style.marginTop = "8px";
+        addBtn.addEventListener("click", addSubjectPrompt);
+        foldersContainer.appendChild(addBtn);
+    }
+
+
+function addSubjectPrompt() {
+    const name = prompt("New subject name:");
+    if(!name) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const exists = subjects.some(s => s.toLowerCase() === trimmed.toLowerCase()); //prevents error with two subject/folders of the same name
+    if (exists) {
+        alert("That subject already exists.");
+        return;
+    }
+    subjects.push(trimmed);
+    saveSubjects();
+    updateSubjectSelect();
+    renderSubjects();
+    if (subjectSelect) subjectSelect.value = trimmed;
+}
+
+function goToSubject(sub) {
+    const url = window.location.pathname + '?subject=' + encodeURIComponent(sub);
+    window.location.href = url;
+}
+
+function exitSubjectView() {
+    window.location.href = window.location.pathname;
+}
+
+function enterSubjectView(sub) {
+    document.body.classList.add('subject-mode');
+
+    const openFormBtn = document.getElementById("openTaskAddForm");
+    if (openFormBtn) openFormBtn.style.display = "none";
+
+    const taskadd = document.querySelector('.taskadd');
+    if(!taskadd) return;
+
+    const existing = document.getElementById('subjectViewHeader');
+    if (existing) existing.remove();
+
+    const hdr = document.createElement('div');
+    hdr.id = 'subjectViewHeader';
+    hdr.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><button id="backToHome" type="button">← Back</button><h2 style="margin:0">${sub}</h2></div>`;
+    taskadd.insertBefore(hdr, taskadd.firstChild);
+
+    const backBtn = document.getElementById('backToHome');
+    if (backBtn) backBtn.addEventListener('click', exitSubjectView);
+
+    currentSubjectFilter = sub;
+    updateSubjectSelect();
+    renderTasks();
+}
+
+function getSubjectFromURL() {
+    return new URLSearchParams(window.location.search).get('subject');
+}
+
+loadSubjects();
+updateSubjectSelect();
+renderSubjects();
+
+if (addSubjectBtn) addSubjectBtn.addEventListener('click', addSubjectPrompt);
+
+
+const saved = localStorage.getItem("tasks");
     if (saved) {
         tasks = JSON.parse(saved);
         tasks.forEach(task => {  // This for loop stops the code from breaking when the tasks are reloaded from local storage
@@ -38,6 +157,31 @@ document.addEventListener("DOMContentLoaded", () => {
         renderTasks();
     }
 
+let totalTimeAccumulated = parseInt(localStorage.getItem('totalTimeAccumulated')) || 0;
+let totalTasksCompleted = parseInt(localStorage.getItem('totalTasksCompleted')) || 0;
+
+const totalHoursElem = document.getElementById("totalhoursstat");
+const totalTasksElem = document.getElementById("totaltasksstat");
+
+function renderStats() {
+    if (totalHoursElem) totalHoursElem.textContent = (totalTimeAccumulated / 60).toFixed(1) +" hrs";
+    if (totalTasksElem) totalTasksElem.textContent = totalTasksCompleted + " tasks";
+}
+
+renderStats();
+
+const subjectParam = getSubjectFromURL();
+if (subjectParam) {
+    enterSubjectView(subjectParam);
+} else{
+    const openFormBtn = document.getElementById("openTaskAddForm");
+    if (openFormBtn) openFormBtn.style.display = "";
+}
+
+
+document.getElementById("addSubjectBtn").addEventListener("click", addSubjectPrompt)
+
+
     const savedStreak = parseInt(localStorage.getItem('streakCount')) || 0;
     renderStreak(savedStreak);
 
@@ -49,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const title = document.getElementById("taskTitle").value;
-        const subject = document.getElementById("taskSubject").value;
+        const subject = document.getElementById("taskSubjectSelect").value;
         const estimatedTime = parseInt(document.getElementById("taskEstimatedTime").value) || 0; //Converts Estimated Time String to integer so calculations can be done with it - only does it when the value is not zero so there are no errors
         const dueDate = document.getElementById("taskDueDate").value;
         const softDeadline = document.getElementById("taskSoftDeadline").value
@@ -116,67 +260,44 @@ function renderUpcoming() {
 function renderTasks() {
     taskList.innerHTML = "";
 
-    tasks.forEach(task => {
+    let filteredTasks = tasks;
+    if (currentSubjectFilter) {
+        filteredTasks = tasks.filter(task => task.subject === currentSubjectFilter);
+    }
+
+    filteredTasks.forEach(task => {
         const li = document.createElement("li");
         li.innerHTML = `
-                <strong>${task.title}</strong> (${task.subject || "Misc"})<br>
+                        <strong>${task.title}</strong> (${task.subject || "Misc"})<br>
                 Time Spent: ${task.timeSpent} min<br>
                 Time Needed: ${task.estimatedTime} min<br>
                 Deadline: ${task.dueDate || "N/A"}<br>
-                Status: ${task.completed ? "✅ Completed" : "⏳ In Progress"}<br>
-                <input type="date" onchange="scheduleTask(${task.id}, this.value)">
+                Scheduled
+                <input type="date" onchange="scheduleTask(${task.id}, this.value)"><br>
                 <button onclick="addTimeSpent(${task.id})">+15 min Studied</button>
                 <button onclick="addEstimatedTime(${task.id})">+15 min Needed</button>
                 <button onclick="toggleComplete(${task.id})">${task.completed ? "Uncheck" : "Mark Completed"}</button>
                 <hr>
         `;
         taskList.appendChild(li);
-    });
+    })
     updateStats();
     renderToday();
     renderUpcoming();
     saveTasks();
 }
 
-function updateStreak() {
-    const today = new Date().toISOString().split('T')[0];
-    const lastDate = localStorage.getItem('lastStudyDate');
-    let streak = parseInt(localStorage.getItem('streakCount')) || 0;
-
-    if (lastDate === today) {
-        // Makes sure that the streak is not updated again if it has already been updated in the day
-        return;
-    } else if (lastDate === getYesterdayDate()) {
-        streak += 1;
-    } else {
-        streak = 1;
-    }
-
-    localStorage.setItem('streakCount', streak);
-    localStorage.setItem('lastStudyDate', today);
-    renderStreak(streak);
-}
-
-function getYesterdayDate() {
-    const date = new Date();
-    date.setDate(date.getDate() -1);
-    return date.toISOString().split('T')[0];
-}
-
-function renderStreak(streak) {
-    const streakElem = document.getElementById('streakDisplay');
-    if (streakElem) {
-        streakElem.textContent = `🔥 Streak: ${streak} days`;
-    }
-
-}
 
 // Pressing button adds 15 minutes to amount of time studied
 window.addTimeSpent = function(id) {
     const task = tasks.find (t => t.id === id);
     if (task) {
         task.timeSpent += 15;
+
+        totalTimeAccumulated += 15;
+        localStorage.setItem('totalTimeAccumulated', totalTimeAccumulated);
         renderTasks();
+        renderStats();
         saveTasks();
     }
 };
@@ -193,16 +314,23 @@ window.addEstimatedTime = function(id) {
 
 // Completing or 'checking off' a task
 window.toggleComplete = function(id) {
-    const taskId = Number(id);
-    const index = tasks.findIndex(t => t.id === taskId);
-
+    const index = tasks.findIndex(t => t.id === id);
     if (index !== -1) {
-        tasks.splice(index,1);
+        const task = tasks[index];
+        if (!task.completed) {
+            totalTasksCompleted += 1;
+            totalTimeAccumulated += task.timeSpent;
+            localStorage.setItem('totalTasksCompleted', totalTasksCompleted);
+            localStorage.setItem('totalTimeAccumulated', totalTimeAccumulated);
+        }
+        tasks.splice(index, 1);
         updateStreak();
         renderTasks();
+        renderStats();
         saveTasks();
-        }
-    };
+    }
+};
+
 
 window.scheduleTask = function(id, date){
     const task = tasks.find(t => t.id === id);
@@ -243,8 +371,42 @@ function updateStats() {
     const totalTime = tasks.reduce((acc, t) => acc + t.timeSpent, 0);
     const completed = tasks.filter(t => t.completed).length;
 
-    totalHoursElem.textContent = (totalTime / 60).toFixed(1) + " hrs";
-    totalTasksElem.textContent = completed + " tasks";
+    if (totalHoursElem) totalHoursElem.textContent = (totalTime / 60).toFixed(1) + " hrs";
+        if (totalTasksElem) totalTasksElem.textContent = completed + " tasks";
+}
+
+function updateStreak() {
+    const today = new Date().toISOString().split('T')[0];
+    const lastDate = localStorage.getItem('lastStudyDate');
+    let streak = parseInt(localStorage.getItem('streakCount')) || 0;
+
+    if (lastDate === today) {
+        // Makes sure that the streak is not updated again if it has already been updated in the day
+        return;
+    } else if (lastDate === getYesterdayDate()) {
+        streak += 1;
+    } else {
+        streak = 1;
+    }
+
+    localStorage.setItem('streakCount', streak);
+    localStorage.setItem('lastStudyDate', today);
+    renderStreak(streak);
+}
+
+function getYesterdayDate() {
+    const date = new Date();
+    date.setDate(date.getDate() -1);
+    return date.toISOString().split('T')[0];
+}
+
+
+function renderStreak(streak) {
+    const streakElem = document.getElementById('streakDisplay');
+    if (streakElem) {
+        streakElem.textContent = `🔥 Streak: ${streak} days`;
+    }
+
 }
 
 function formatDate(dateStr) {
@@ -252,5 +414,8 @@ function formatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString("en-AU", {weekday: 'short', day: 'numeric', month: 'short'});
 }
+
+renderTasks();
+renderSubjects();
 
 });

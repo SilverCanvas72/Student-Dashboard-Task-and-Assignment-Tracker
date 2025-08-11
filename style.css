@@ -33,6 +33,7 @@ body{
     margin-bottom: 1vh;
     height: 17vh;
 }
+/* Div that holds the folders in it*/
 .folders{
     border: 2px solid #2A2A2E;
     border-radius: 15px;
@@ -40,6 +41,35 @@ body{
     margin-top: 1vh;
     margin-bottom: 1vh;
     height: 18vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow-y: auto;
+}
+/* Individual folders with 'folder' class */
+.folder {
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+}
+/* Folders with tasks assigned*/
+.folder.active{
+    background: rgb(51, 51, 51);
+    color: white;
+    border-color: #222;
+}
+.small-btn {
+    display: inline-block;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    background: transparent;
+    cursor: pointer;
 }
 .taskadd{
     position:relative;
@@ -224,3 +254,39 @@ body{
     text-align:center;
 }
 
+/* SUBJECT/FOLDER VIEW MODE 
+Hides everything except for task view*/
+
+.subject-mode .right,
+.subject-mode .header,
+.subject-mode .folders {
+    display: none !important
+}
+
+.subject-mode .taskadd {
+    width: 100%;
+}
+
+#subjectViewHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+#subjectViewHeader h2 {
+    margin: 0;
+    font-size: 1.1 rem;
+}
+#subjectViewHeader button {
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+.subject-mode .left {
+    border: none !important;
+    width: 95vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+
+}
