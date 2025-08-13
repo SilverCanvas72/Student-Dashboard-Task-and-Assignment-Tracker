@@ -1,5 +1,19 @@
+/*
+  Project: TaskHarbour - Student Dashboard
+  Author: Izzy de Wijn
+  Description: Handles the logic and stoarge of data for the website
+  Allows users to:
+        + Add tasks and subtasks
+        + Add subject folders
+        + Schedule tasks
+        + See tasks in the today and upcoming views
+        + Navigate to individual subjects view
+        + See statistics such as task and hours left in the day, total hours and tasks completed aswell as a streak showing how many days in a row the user has completed tasks
+*/
+
 let tasks = [];
 
+// Purpose: Creates a new task with all needed variables - originally all set to zero or nothing
 function createTask (title, subject, estimatedTime, dueDate, softDeadline) {
     return {
         id: Date.now(),
@@ -23,12 +37,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const openFormBtn = document.getElementById("openTaskAddForm");
     const taskFormContainer = document.getElementById("taskFormContainer");
     const subjectSelect = document.getElementById("taskSubjectSelect");
-    const foldersContainer = document.querySelector(".folders");
+    const foldersContainer = document.querySelector(".folder-container");
     const addSubjectBtn = document.getElementById("addSubjectBtn");
+
 
     let subjects = [];
     let currentSubjectFilter = null;
 
+    // Purpose: Loads subjects from default list aswell as ones already saved in the user's local storage
     function loadSubjects() {
         const s = localStorage.getItem('subjects');
         if (s) {
@@ -41,11 +57,14 @@ document.addEventListener("DOMContentLoaded", () => {
             subjects = ["Misc", "Maths", "Science", "English"]; //Default Subjects
         }
     }
+    
 
+    // Purpose: Saves subjects to local storage
     function saveSubjects() {
         localStorage.setItem('subjects', JSON.stringify(subjects));
     }
 
+    // Purpose: Updates the subjects
     function updateSubjectSelect() {
         if (!subjectSelect) return;
         subjectSelect.innerHTML = "";
@@ -57,14 +76,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+        // Purpose: Renders subject button
     function renderSubjects() {
         if (!foldersContainer) return;
         foldersContainer.innerHTML = "";
 
-        subjects.forEach(sub => {
+
+        const transparentColors = {
+        "red": "rgba(255, 0, 0, 0.05)",
+        "green": "rgba(0, 128, 0, 0.05)",
+        "orange": "rgba(255, 165, 0, 0.05)",
+        "blue": "rgba(0, 0, 255, 0.05)"
+    };
+
+        const colors = ["red", "green", "blue", "orange"];
+        subjects.forEach((sub, index) => {
             const btn = document.createElement("button");
             btn.className = "folder";
             btn.textContent = sub;
+            const color = colors[index % colors.length]; // Picks the color for the folder based on its index
+            btn.style.color = color; // asigns it text color
+            btn.style.backgroundColor = transparentColors[color]; // assigns the same colour to its background colour but more transparent
             btn.addEventListener("click", () => {
                 goToSubject(sub);
             });
@@ -75,11 +107,13 @@ document.addEventListener("DOMContentLoaded", () => {
         addBtn.className = "small-btn";
         addBtn.textContent = "+ Add subject";
         addBtn.style.marginTop = "8px";
+        addBtn.style.color = 'white';
         addBtn.addEventListener("click", addSubjectPrompt);
         foldersContainer.appendChild(addBtn);
     }
 
 
+// Purpose: Makes the form for users to add a subject or folder
 function addSubjectPrompt() {
     const name = prompt("New subject name:");
     if(!name) return;
@@ -97,15 +131,18 @@ function addSubjectPrompt() {
     if (subjectSelect) subjectSelect.value = trimmed;
 }
 
+// Purpose: Moves the user to the new 'page' as per the subject they clicked on
 function goToSubject(sub) {
     const url = window.location.pathname + '?subject=' + encodeURIComponent(sub);
     window.location.href = url;
 }
 
+// Purpose: Brings back all element on the page - essentially redericting the user back to the homepage after being in subject view
 function exitSubjectView() {
     window.location.href = window.location.pathname;
 }
 
+// Purpose: Populates the individual subject view aswell as hiding everything un-needed to make it appear as if the user has gone to a new page.
 function enterSubjectView(sub) {
     document.body.classList.add('subject-mode');
 
@@ -131,6 +168,7 @@ function enterSubjectView(sub) {
     renderTasks();
 }
 
+
 function getSubjectFromURL() {
     return new URLSearchParams(window.location.search).get('subject');
 }
@@ -141,7 +179,7 @@ renderSubjects();
 
 if (addSubjectBtn) addSubjectBtn.addEventListener('click', addSubjectPrompt);
 
-
+// Purpose: Gets tasks from local storage
 const saved = localStorage.getItem("tasks");
     if (saved) {
         tasks = JSON.parse(saved);
@@ -163,6 +201,8 @@ let totalTasksCompleted = parseInt(localStorage.getItem('totalTasksCompleted')) 
 const totalHoursElem = document.getElementById("totalhoursstat");
 const totalTasksElem = document.getElementById("totaltasksstat");
 
+
+// Purpose: Render the statistics from javascript variables into stats class in html
 function renderStats() {
     if (totalHoursElem) totalHoursElem.textContent = (totalTimeAccumulated / 60).toFixed(1) +" hrs";
     if (totalTasksElem) totalTasksElem.textContent = totalTasksCompleted + " tasks";
@@ -205,10 +245,12 @@ document.getElementById("addSubjectBtn").addEventListener("click", addSubjectPro
         taskForm.reset();
 });
 
+// Purpose: Saves tasks into local storage
 function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+// Purpose: Adds tasks that are scheduled today to the today view
 function renderToday() {
     const todayDiv = document.querySelector(".today-content");
     todayDiv.innerHTML = "";
@@ -258,6 +300,7 @@ function renderToday() {
     document.querySelector(".todaytasks .todaytasksstat").textContent = incompleteCount + " tasks";
 }
 
+// Purpose: Adds tasks that are scheduled or due in the next week to the today view
 function renderUpcoming() {
     const upcomingDiv = document.querySelector(".upcoming-content");
     upcomingDiv.innerHTML = "";
@@ -294,6 +337,7 @@ function renderUpcoming() {
     });
 }
 
+// Purpose: Renders the tasks - sets what variables to display and where that are associated with each task
 function renderTasks() {
     taskList.innerHTML = "";
 
@@ -332,6 +376,8 @@ function renderTasks() {
                     </form>
                 </div>                
         `;
+        li.style.border = '1px solid #2A2A2E';
+        li.style.borderRadius = '12px';
         taskList.appendChild(li);
         renderSubtasks(task);
 
@@ -502,7 +548,10 @@ window.scheduleTask = function(id, date){
 
 function getTodayTasks() {
     const today = new Date().toISOString().split("T")[0];
-    return tasks.filter(t => t.scheduledDate === today);    
+    return tasks.filter(t => 
+        t.scheduledDate === today ||    // tasks scheduled for today
+        t.dueDate === today              // tasks with deadline today
+    );
 }
 
 function getUpcomingTasks(){
@@ -563,7 +612,7 @@ function getYesterdayDate() {
 function renderStreak(streak) {
     const streakElem = document.getElementById('streakDisplay');
     if (streakElem) {
-        streakElem.textContent = `🔥 Streak: ${streak} days`;
+        streakElem.textContent = `Streak: ${streak} days`;
     }
 
 }

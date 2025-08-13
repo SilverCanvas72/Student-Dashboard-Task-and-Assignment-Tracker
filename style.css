@@ -1,5 +1,7 @@
 body{
     margin:0px;
+    background-color: #040404;
+    color: white;
 }
 .container{
     display:flex;
@@ -7,7 +9,7 @@ body{
 
 /*Within 'container' div*/
 .left{
-    border: 1px solid #919199;
+    border: none;
     width: 60vw;
     height: 100vh;
     border-radius: 15px; 
@@ -16,7 +18,7 @@ body{
 
 }
 .right{
-    border: 1px solid #919199;
+    border: none;
     width: 40vw;
     height: 100vh;
     border-radius: 15px; 
@@ -26,7 +28,7 @@ body{
 
 /*Within 'left' div*/
 .header{
-    border: 2px solid #2A2A2E;
+    border: none;
     border-radius: 15px;
     margin: 2vh;
     margin-top: 2vh;
@@ -35,26 +37,46 @@ body{
 }
 /* Div that holds the folders in it*/
 .folders{
-    border: 2px solid #2A2A2E;
-    border-radius: 15px;
     margin: 2vh;
     margin-top: 1vh;
     margin-bottom: 1vh;
     height: 25vh;
-    display: flex;
-    flex-direction: column;
+    display: inline-block;
     gap: 0.5rem;
     overflow-y: auto;
+    border: 1px solid #2A2A2E;
+    border-radius: 12px;
 }
+
+#folders-container {
+  display: flex;
+  flex-wrap: wrap;          /* lets items wrap onto new lines */
+  gap: 10px;                /* space between buttons horizontally and vertically */
+  justify-content: flex-start; /* align items to the left */
+}
+
+.folder{
+    border: 1px solid currentColor;
+}
+
+.folder:hover{
+    transform: translateY(-2px);
+}
+
 /* Individual folders with 'folder' class */
 .folder {
     background: transparent;
-    border: 1px solid #ccc;
     border-radius: 10px;
     padding: 0.4rem 0.6rem;
     cursor: pointer;
     text-align: left;
-    width: 100%;
+    width: 10vw;
+    height: 8vh;
+    margin: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+
 }
 /* Folders with tasks assigned*/
 .folder.active{
@@ -63,7 +85,9 @@ body{
     border-color: #222;
 }
 .small-btn {
-    display: inline-block;
+    display: block;
+    margin-left: 10px;
+    padding: 5vw;
     padding: 6px 8px;
     font-size: 0.85rem;
     border-radius: 8px;
@@ -83,6 +107,8 @@ body{
     height: 57vh;
     overflow-y: auto; /* For scrolling in task add instead of tasks overflowing onto homepage*/
     padding: 1rem;
+    background-color: #000000;
+    color: white;
 }
 
 .tasklist-wrapper {
@@ -115,7 +141,6 @@ body{
 }
 /*Within 'right' div*/
 .stats{
-    border: 2px solid #919199;
     border-radius: 15px;
     margin: 2vh;
     margin-top: 2vh;
@@ -124,7 +149,7 @@ body{
     display:flex;
 }
 .today{
-    border: 2px solid #2A2A2E;
+    border: 2px solid #25253D;
     border-radius: 15px;
     margin: 2vh;
     margin-top: 1vh;
@@ -133,6 +158,7 @@ body{
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background-color: #000000;
 }
 .upcoming{
     border: 2px solid #2A2A2E;
@@ -154,17 +180,18 @@ body{
 
 /* Within 'stats' div*/
 .statstoday{
-    border: 1px solid #2A2A2E;
+    border: 1px solid #26D4FF;
     border-radius: 15px;
     height: 9vh;
     width: 39.75vw;
     margin-right: 0.25vw;
     display: flex;
     flex-direction: column;
+    color: #55CCE3;
+    padding-left: 0.5vw;
 }
 
 .total{
-    border: 1px solid #919199;
     border-radius: 15px;
     height: 9vh;
     width: 29.5vw;
@@ -175,44 +202,49 @@ body{
 }
 
 .streak{
-    border: 1px solid #2A2A2E;
+    border: 1px solid #FFA726;
     border-radius: 15px;
     height: 9vh;
     width: 29.75vw;
     margin-left: 0.25vw;
     display: flex;
     flex-direction: column;
+    color: #B58D62;
+    text-align: center;
 
 
 }
 /*Within 'total' div*/
 .totalhours{
-    border: 1px solid #2A2A2E;
+    border: 1px solid #8826FF;
     border-radius: 15px;
     height: 49.75vh;
     margin-bottom: 0.25vh;
     display: flex;
     vertical-align: middle;
+    color: #675179;
+    padding-left: 1vw;
+
 }
 
 .totaltasks{
-    border: 1px solid #2A2A2E;
+    border: 1px solid #26FF88;
     height: 49.75vh;
     border-radius: 15px;
     margin-top: 0.25vh;
     display: flex;
     vertical-align: middle;
+    color: #568D59;
+    padding-left: 1vw;
 }
 
 /*Within 'statstoday' div*/
 .todayhours{
-    border: 1px solid #2A2A2E;
     border-radius: 15px;
     height: 50vh;
 
 }
 .todaytasks {
-    border: 1px solid #2A2A2E;
     border-radius: 15px;
     height: 50vh;
 }
@@ -300,3 +332,14 @@ Hides everything except for task view*/
     list-style-type: disc;
     padding-left: 20px;
 }
+.small-btn{
+    color: white;
+}
+
+#policies{
+    border: 2px solid #2A2A2E;
+    border-radius: 12px;
+    margin: 2vw;
+    padding-left: 5vw;
+}
+

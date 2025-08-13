@@ -1,23 +1,33 @@
+<!--
+  Project: TaskHarbour - Student Dashboard
+  Author: Izzy de Wijn
+  Description: An all in one student dashboard for students to 
+  Links: This page links to policies.html - The policies page aswell as style.css for stryling and main.js for functionality
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student study timer</title>
+    <title>TaskHarbour - Student Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class='container'>
+    <!--The left hand side container, containing the header, folders and task add page-->
     <div class='left'> 
         <div class='header'>
-            <h2>Welcome</h2>
+            <h2>Welcome Back!</h2>
         </div>
         <div class="folders">
+            <div class="folder-container">
+                
+            </div>
         </div>
         <div class="taskadd">
             <h3>Tasks</h3>
             <div id="taskFormContainer" class="taskform-hidden">
-                <!--note to self: Add 'tool tips' - info on doing that here: https://www.w3schools.com/css/css_tooltip.asp-->
                 <form id="taskForm">
                         <input type="text" id="taskTitle" placeholder="Task Name" required><br>
                        
@@ -27,12 +37,14 @@
                         </select>
                         <button id="addSubjectBtn" type="button" class="small-btn">+ Add Subject</button><br>
                         <input type="number" id="taskEstimatedTime" placeholder="Minutes Estimated"><br>
+                        <label for="taskDueDate">Due Date</label>
                         <input type="date" id="taskDueDate" placeholder="Due Date"><br>
+                        <label for="taskSoftDeadline">Soft Deadline</label>
                         <input type="date" id="taskSoftDeadline" placeholder="Soft Deadline"><br>
                         <button type="submit">Add Task</button>
                 </form>
             </div>
-
+            <!--Populated using the JS - from the users local storage-->
             <div class="tasklist-wrapper">
                 <ul id="taskList"></ul>
             </div>
@@ -40,12 +52,14 @@
             <button id="openTaskAddForm" class="floating-plus">+</button>
         </div>
     </div>
+    <!--The right hand side container containing the statistic section, today view and upcoming view-->
     <div class='right'>
+        <!--The container for the statistics including the hours and tasks left for today, the overall hours studied and tasks completed and the users streak-->
         <div class="stats">
             <div class="statstoday">
                 <div class="todayhours">
                     <div class="abcd">
-                        <div>Left Today:</div>
+                        <div><strong>Left Today:</strong></div>
                         <div class="todayhoursstat"></div>
                     </div>
                 </div>
@@ -91,6 +105,10 @@
         </div>
     </div>
 </div>
+<!--Contains the link to TaskHarbour's policy page-->
+<footer>
+    <a href="policies.html">View our policies</a>
+</footer>
 
 <script src="main.js"></script>    
 </body>
