@@ -14,8 +14,11 @@ I made the project because I am obsessed with organisation and wanted to make th
 ---
 
 ### How you made your project?
+
 I used vanilla HTML, CSS and Javascript to make the project aswell as making the mockups in Figma
 The project is deployed using Vercel
+
+Disclaimer: This project includes JavaScript code written with help of AI, All HTML and CSS was written completely by me but I did use some help from Chat-GPT for the Javscript.
 
 ---
 
